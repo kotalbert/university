@@ -1,27 +1,57 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
+
+type Student struct {
+	firstName string
+	lastName  string
+	gpa       float64
+}
 
 func main() {
-	var exams = [3]float64{}
+	n := readInt() // total numbers of applicants
+	m := readInt() // number of available seats
 
-	for i := 0; i < 3; i++ {
-		_, _ = fmt.Scan(&exams[i])
+	students := readApplications(n)
+	sortStudents(students)
+
+	fmt.Println("Successful applicants:")
+	for i := 0; i < m; i++ {
+		fmt.Println(students[i].firstName, students[i].lastName)
 	}
+}
+func sortStudents(students []Student) {
+	sort.Slice(students, func(i, j int) bool {
+		if students[i].gpa != students[j].gpa {
+			return students[i].gpa > students[j].gpa
+		}
+		if students[i].firstName != students[j].firstName {
+			return students[i].firstName < students[j].firstName
+		}
 
-	var score float64
-	for i := 0; i < 3; i++ {
-		score += exams[i]
+		return students[i].lastName < students[j].lastName
+	})
+}
+
+func readInt() int {
+	var input int
+	_, _ = fmt.Scan(&input)
+	return input
+}
+
+func readStudent() Student {
+	var student Student
+	_, _ = fmt.Scan(&student.firstName, &student.lastName, &student.gpa)
+	return student
+}
+
+func readApplications(n int) []Student {
+	applicants := make([]Student, n)
+	for i := 0; i < n; i++ {
+		applicants[i] = readStudent()
 	}
-	score = score / 3
-
-	fmt.Println(score)
-	if score >= 60.0 {
-		fmt.Println("Congratulations, you are accepted!")
-		return
-	} else {
-		fmt.Println("We regret to inform you that we will not be able to offer you admission.")
-		return
-	}
-
+	return applicants
 }
