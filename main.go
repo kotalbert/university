@@ -52,6 +52,8 @@ func readInt() int {
 	return input
 }
 
+// translateDepartment translates the department name to the corresponding Department constant, in order to read
+// students applications and convert string department names and create a Student struct.
 func translateDepartment(department string) Department {
 	switch department {
 	case "Biotech":
@@ -68,10 +70,25 @@ func translateDepartment(department string) Department {
 	return -1
 }
 
-func readStudent(line string) Student {
+// readStudent reads a student's application and returns a Student struct.
+//
+//	The student application is a line read from the list, with the following format:
+//	<first name> <last name> <GPA> <department 1> <department 2> <department 3>
+func readStudent(line string) (Student, error) {
 	var student Student
-	_, _ = fmt.Scan(&student.firstName, &student.lastName, &student.gpa)
-	return student
+	var dept1, dept2, dept3 string
+
+	_, err := fmt.Sscanf(line, "%s %s %f %s %s %s", &student.firstName, &student.lastName, &student.gpa, &dept1, &dept2, &dept3)
+
+	if err != nil {
+		return student, err
+	}
+
+	student.dept1 = translateDepartment(dept1)
+	student.dept2 = translateDepartment(dept2)
+	student.dept3 = translateDepartment(dept3)
+
+	return student, nil
 }
 
 func readApplications() []Student {
