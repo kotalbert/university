@@ -60,3 +60,16 @@ func Test_readStudent(t *testing.T) {
 		})
 	}
 }
+
+func Test_readApplications(t *testing.T) {
+	students := readApplications()
+	if len(students) == 0 {
+		t.Errorf("readApplications() = %v, want a list of students", students)
+	}
+	for _, student := range students {
+		if student.firstName == "" || student.lastName == "" {
+			t.Errorf("readApplications() = %v, want a list of students", students)
+		}
+	}
+
+}

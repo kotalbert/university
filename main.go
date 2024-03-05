@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"os"
 	"sort"
 )
 
@@ -91,8 +94,26 @@ func readStudent(line string) (Student, error) {
 	return student, nil
 }
 
+// readApplications reads the students applications from a file `applicant_list.txt` and returns a slice of Student structs.
 func readApplications() []Student {
 	var applicants []Student
+
+	file, err := os.Open("applicant_list.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		student, err := readStudent(scanner.Text())
+		if err != nil {
+			log.Fatal(err)
+		}
+		applicants = append(applicants, student)
+	}
 
 	return applicants
 }
